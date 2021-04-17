@@ -246,6 +246,30 @@ exports.update = async (req, res) => {
     });
 };
 
+exports.topUp = async (req, res) => {
+  const id = req.params.id;
+
+  const { credit } = req.body;
+
+  const data = credit;
+
+  usersModel
+    .findUser(id, "Top Up")
+    .then((result) => {
+      return usersModel.updateCredit(id, data);
+    })
+    .then((result) => {
+      delete result[0].pin;
+      helper.printSuccess(res, 200, "Top Up success", result);
+    })
+    .catch((err) => {
+      if (err.message === "Internal server error") {
+        helper.printError(res, 500, err.message);
+      }
+      helper.printError(res, 400, err.message);
+    });
+};
+
 exports.updatePin = async (req, res) => {
   const id = req.params.id;
 

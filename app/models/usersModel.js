@@ -112,6 +112,33 @@ exports.updateUsers = (id, data) => {
     );
   });
 };
+
+exports.updateCredit = (id, data) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "UPDATE users SET credit = ? WHERE id = ?",
+      [data, id],
+      (err, result) => {
+        if (!err) {
+          connection.query(
+            "SELECT * FROM users WHERE id = ?",
+            id,
+            (err, result) => {
+              if (!err) {
+                resolve(result);
+              } else {
+                reject(new Error("Internal server error"));
+              }
+            }
+          );
+        } else {
+          reject(new Error("Internal server error"));
+        }
+      }
+    )
+  })
+}
+
 exports.updatePin = (id, data) => {
   return new Promise((resolve, reject) => {
     connection.query(
