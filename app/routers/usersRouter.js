@@ -7,8 +7,9 @@ const auth = require("../middlewares/auth");
 router
   .get("/", auth.verification(), usersController.findAll)
   .get("/find-one", auth.verification(), usersController.findOne)
-  .post("/", multer.uploadImage.single("image"), usersController.create)
+  .get("/find-user", usersController.findId)
   .get("/auth/verify", usersController.verify)
+  .post("/", multer.uploadImage.single("image"), usersController.create)
   .post("/auth/login", usersController.login)
   .post("/auth/forgot-password", usersController.forgotPassword)
   .put("/auth/reset-password", usersController.resetPassword)

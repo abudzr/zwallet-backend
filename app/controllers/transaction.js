@@ -33,12 +33,12 @@ exports.listTransactionId = async (req, res) => {
 
 
 exports.createTopUp = async (req, res) => {
-    const { idUser, amount, method, notes } = req.body;
+    const { idUser, amount, notes } = req.body;
     const data = {
         idUser,
         idReceiver: idUser,
         amount,
-        method,
+        method: "topup",
         notes,
         status: "success"
     };
@@ -59,14 +59,14 @@ exports.createTopUp = async (req, res) => {
 };
 
 exports.createTransfer = async (req, res) => {
-    const { idUser, idReceiver, amount, method, notes, pin } = req.body;
+    const { idUser, idReceiver, amount, notes, pin } = req.body;
     const data = {
         idUser,
         idReceiver,
         amount,
-        method,
+        method: "transfer",
         notes,
-        status: "success"
+        status: "pending"
     };
     try {
         const user = await usersModel.findUser(idReceiver, "Check User")
@@ -75,16 +75,16 @@ exports.createTransfer = async (req, res) => {
             return;
         } else {
             const credit = await transactionModel.checkCredit(idUser)
-            if (credit[0].credit == 0) {
+            if (credit[0].credit < amount) {
                 helper.printError(res, 400, "Sorry, your balance is insufficient")
                 return;
             }
+            await transactionModel.createTransaction(data);
             const cekpin = await transactionModel.checkPin(idUser, pin)
             if (cekpin < 1) {
                 helper.printError(res, 400, "Incorrect pin, please enter the pin correctly ")
                 return;
             }
-            await transactionModel.createTransaction(data);
             await transactionModel.transferIdUser(idUser);
             await transactionModel.receiverTransfer(idReceiver);
             helper.printSuccess(

@@ -99,7 +99,7 @@ exports.transferIdUser = (idUser) => {
                                     (err, result) => {
                                         if (!err) {
                                             connection.query(
-                                                `UPDATE transaction SET creditLeft =${result[0].credit} WHERE idUser =${idUser} ORDER BY createdAt DESC LIMIT 1 `,
+                                                `UPDATE transaction SET creditLeft =${result[0].credit}, status="success"  WHERE idUser =${idUser} ORDER BY createdAt DESC LIMIT 1 `,
                                                 (err, result) => {
                                                     if (!err) {
                                                         resolve(result);
