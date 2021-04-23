@@ -28,22 +28,18 @@ exports.listTransactionId = async (req, res) => {
     }
 }
 
-
-
-
-
 exports.createTopUp = async (req, res) => {
     const { idUser, amount, notes } = req.body;
     const data = {
         idUser,
         idReceiver: idUser,
         amount,
-        method: "topup",
         notes,
+        type: "Receive",
         status: "success"
     };
-    transactionModel
-        .createTopup(data, idUser)
+
+    await transactionModel.createTopup(data, idUser)
         .then((result) => {
             return helper.printSuccess(
                 res,
@@ -64,10 +60,19 @@ exports.createTransfer = async (req, res) => {
         idUser,
         idReceiver,
         amount,
-        method: "transfer",
         notes,
+        type: "Transfer",
         status: "pending"
     };
+    const dataReceiver = {
+        idUser: idReceiver,
+        idReceiver: idUser,
+        amount,
+        notes,
+        type: "Receive",
+        status: "success"
+    };
+
     try {
         const user = await usersModel.findUser(idReceiver, "Check User")
         if (user < 1) {
@@ -79,12 +84,13 @@ exports.createTransfer = async (req, res) => {
                 helper.printError(res, 400, "Sorry, your balance is insufficient")
                 return;
             }
-            await transactionModel.createTransaction(data);
             const cekpin = await transactionModel.checkPin(idUser, pin)
             if (cekpin < 1) {
                 helper.printError(res, 400, "Incorrect pin, please enter the pin correctly ")
                 return;
             }
+            await transactionModel.createTransaction(data);
+            await transactionModel.createTransaction(dataReceiver);
             await transactionModel.transferIdUser(idUser);
             await transactionModel.receiverTransfer(idReceiver);
             helper.printSuccess(
@@ -96,4 +102,68 @@ exports.createTransfer = async (req, res) => {
     } catch (err) {
         helper.printError(res, 500, err.message);
     }
+};
+
+exports.findUserIncome = (req, res) => {
+    const id = req.params.id;
+
+    transactionModel
+        .getAllIncomebyId(id)
+        .then((result) => {
+            console.log(result[0].income);
+            if (result < 1) {
+                helper.printError(res, 400, "User income not found");
+                return;
+            }
+            helper.printSuccess(res, 200, "Find user income successfully", result);
+        })
+        .catch((err) => {
+            helper.printError(res, 500, err.message);
+        });
+};
+
+exports.findUserExpense = (req, res) => {
+    const id = req.params.id;
+
+    transactionModel
+        .getAllExpensebyId(id)
+        .then((result) => {
+            if (result < 1) {
+                helper.printError(res, 400, "User income not found");
+                return;
+            }
+            helper.printSuccess(res, 200, "Find user income successfully", result);
+        })
+        .catch((err) => {
+            helper.printError(res, 500, err.message);
+        });
+};
+
+exports.findUserTransactions = (req, res) => {
+    const id = req.params.id;
+    const { page, perPage } = req.query;
+    const sortBy = req.query.sortBy ? req.query.sortBy : "id";
+    const order = req.query.order ? req.query.order : "ASC";
+
+    transactionModel
+        .getAllUserTransactions(id, page, perPage, sortBy, order)
+        .then(([totalData, totalPage, result, page, perPage]) => {
+            if (result < 1) {
+                helper.printError(res, 400, "Transactions not found");
+                return;
+            }
+            helper.printPaginate(
+                res,
+                200,
+                "Find all user transactions successfully",
+                totalData,
+                totalPage,
+                result,
+                page,
+                perPage
+            );
+        })
+        .catch((err) => {
+            helper.printError(res, 500, err.message);
+        });
 };

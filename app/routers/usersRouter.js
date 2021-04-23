@@ -13,10 +13,10 @@ router
   .post("/auth/login", usersController.login)
   .post("/auth/forgot-password", usersController.forgotPassword)
   .put("/auth/reset-password", usersController.resetPassword)
-  .put("/:id", multer.uploadImage.single("image"), usersController.update)
+  .patch("/:id", multer.uploadImage.single("image"), usersController.update)
   .put("/edit-password/:id", usersController.updatePassword)
   .put("/edit-pin/:id", usersController.updatePin)
-  .put("/topup/:id", auth.verification(), usersController.topUp)
+  // .put("/topup/:id", auth.verification(), usersController.topUp)
   .delete("/:id", auth.verification(), auth.isAdmin(), usersController.delete);
 
 module.exports = router;

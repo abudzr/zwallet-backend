@@ -19,7 +19,6 @@ exports.printPaginate = (
   });
 };
 
-// Kalau Tidak ada Error
 (exports.printPaginateDetail = (res, rescode, message, pagination, arr) => {
   res.json({
     code: rescode,

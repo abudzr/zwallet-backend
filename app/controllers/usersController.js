@@ -212,13 +212,7 @@ exports.verify = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-
-  const validate = validation.validationUsersUpdate(req.body);
-
-  if (validate.error) {
-    helper.printError(res, 400, validate.error.details[0].message);
-    return;
-  }
+  // const id = req.auth.id;
 
   const {
     email,
@@ -228,12 +222,13 @@ exports.update = async (req, res) => {
     lastname,
   } = req.body;
 
+  const initialResult = await usersModel.getUsersById(id)
   const data = {
-    email,
-    phoneNumber,
-    username,
-    firstname,
-    lastname,
+    email: email === undefined ? initialResult[0].email : email,
+    phoneNumber: phoneNumber === undefined ? initialResult[0].phoneNumber : phoneNumber,
+    username: username === undefined ? initialResult[0].username : username,
+    firstname: firstname === undefined ? initialResult[0].firstname : firstname,
+    lastname: lastname === undefined ? initialResult[0].lastname : lastname
   };
 
   usersModel
@@ -255,30 +250,6 @@ exports.update = async (req, res) => {
     .then((result) => {
       delete result[0].password;
       helper.printSuccess(res, 200, "Users has been updated", result);
-    })
-    .catch((err) => {
-      if (err.message === "Internal server error") {
-        helper.printError(res, 500, err.message);
-      }
-      helper.printError(res, 400, err.message);
-    });
-};
-
-exports.topUp = async (req, res) => {
-  const id = req.params.id;
-
-  const { credit } = req.body;
-
-  const data = credit;
-
-  usersModel
-    .findUser(id, "Top Up")
-    .then((result) => {
-      return usersModel.updateCredit(id, data);
-    })
-    .then((result) => {
-      delete result[0].pin;
-      helper.printSuccess(res, 200, "Top Up success", result);
     })
     .catch((err) => {
       if (err.message === "Internal server error") {

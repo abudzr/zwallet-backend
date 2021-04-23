@@ -6,6 +6,9 @@ const auth = require("../middlewares/auth");
 
 router
     .get("/", auth.verification(), transactionController.listTransactionId)
+    .get("/income/:id", auth.verification(), transactionController.findUserIncome)
+    .get("/expense/:id", auth.verification(), transactionController.findUserExpense)
+    .get("/user/:id", auth.verification(), transactionController.findUserTransactions)
     .post("/transfer", transactionController.createTransfer)
     .post("/topup", transactionController.createTopUp)
 
