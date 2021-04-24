@@ -8,6 +8,11 @@ const mail = require("../helpers/sendEmail");
 const hash = require("../helpers/hashPassword");
 const validation = require("../helpers/validation");
 const secretKey = process.env.SECRET_KEY;
+const host = process.env.HOST;
+const port = process.env.PORT_FRONTEND;
+const link = `http://${host}:${port}`;
+
+
 
 exports.findAll = (req, res) => {
   const { page, perPage } = req.query;
@@ -100,20 +105,18 @@ exports.create = async (req, res) => {
     username,
     email,
     password,
-    pin,
     firstname,
-    lastname,
-    phoneNumber
+    lastname
   } = req.body;
 
   const data = {
     username,
     email,
     password: await hash.hashPassword(password),
-    pin,
+    pin: null,
     firstname,
     lastname,
-    phoneNumber,
+    phoneNumber: null,
     image,
     credit: 0,
     isActive: false,
@@ -192,6 +195,8 @@ exports.verify = async (req, res) => {
             } else {
               await usersModel.setActive(email);
               await usersModel.deleteToken(email);
+              res.redirect(`${link}/auth/pin`)
+
               helper.printSuccess(
                 res,
                 200,
