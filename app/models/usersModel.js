@@ -410,8 +410,7 @@ exports.findAccount = (data) => {
 exports.setPassword = (password, email) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      "UPDATE users SET password = ? WHERE email = ?",
-      [password, email],
+      `UPDATE users SET password ='${password}' WHERE email ='${email}'`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -452,8 +451,20 @@ exports.checkPassword = (id, password) => {
   });
 };
 
-
-
+exports.createPin = (email, pin) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `UPDATE users SET pin =${pin} WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(new Error(err));
+        }
+      }
+    );
+  });
+};
 
 exports.checkPin = (id, pin) => {
   return new Promise((resolve, reject) => {

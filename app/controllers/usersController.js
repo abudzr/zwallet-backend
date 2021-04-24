@@ -195,7 +195,7 @@ exports.verify = async (req, res) => {
             } else {
               await usersModel.setActive(email);
               await usersModel.deleteToken(email);
-              res.redirect(`${link}/auth/pin`)
+              res.redirect(`${link}/auth/pin/${email}/${token}`)
 
               helper.printSuccess(
                 res,
@@ -296,6 +296,35 @@ exports.updatePin = async (req, res) => {
     helper.printError(res, 400, err.message);
   }
 };
+
+exports.createPin = async (req, res) => {
+  const email = req.query.email;
+
+  const { pin } = req.body
+
+  const data = pin
+
+  try {
+    const user = await usersModel.findEmail(email);
+    if (user < 1) {
+      helper.printError(res, 400, "Email is not valid!");
+      return;
+    }
+    await usersModel.createPin(email, data)
+    helper.printSuccess(
+      res,
+      200,
+      "Create Pin Success",
+    );
+  } catch (err) {
+    helper.printError(res, 500, err.message);
+  }
+};
+
+
+
+
+
 
 
 exports.createPhoneNumber = async (req, res) => {
@@ -511,6 +540,14 @@ exports.forgotPassword = (req, res) => {
 exports.resetPassword = async (req, res) => {
   const email = req.query.email;
   const token = req.query.token;
+
+  // const validate = validation.validationUsersResetPassword(req.body);
+
+  // if (validate.error) {
+  //   helper.printError(res, 400, validate.error.details[0].message);
+  //   return;
+  // }
+
   const password = req.body.password;
 
   try {
@@ -537,11 +574,13 @@ exports.resetPassword = async (req, res) => {
               }
             } else {
               const data = await hash.hashPassword(password);
+              // console.log(data);
               await usersModel.setPassword(data, email);
               if (!data) {
                 helper.printError(res, 400, "Content cannot be empty");
                 return;
               }
+              // res.redirect(`${link}/auth/reset-password/${email}/${token}`)
               helper.printSuccess(
                 res,
                 200,

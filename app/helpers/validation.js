@@ -33,6 +33,17 @@ module.exports = {
     });
     return schema.validate(users);
   },
+  validationUsersResetPassword: (users) => {
+    const schema = Joi.object({
+      password: Joi.string().min(8).required().strict(),
+      confirmPassword: Joi.string()
+        .valid(Joi.ref("password"))
+        .required()
+        .strict(),
+    });
+    return schema.validate(users);
+  },
+
   validationUsersUpdatePin: (users) => {
     const schema = Joi.object({
       pin: Joi.number().required(),

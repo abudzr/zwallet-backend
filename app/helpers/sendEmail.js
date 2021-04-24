@@ -34,7 +34,7 @@ const send = (destination, token, type) => {
           from: email,
           to: destination,
           subject: "Reset Password",
-          html: `Click this link to reset your password : <a href="${link}/forgot-password/?email=${destination}&token=${token}">Reset Password</a>`,
+          html: `Click this link to reset your password : <a href="${link}/auth/reset-password/${destination}/${token}">Reset Password</a>`,
         });
         resolve(info);
       }
