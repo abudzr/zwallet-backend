@@ -10,7 +10,6 @@ module.exports = {
       pin: Joi.number().required(),
       firstname: Joi.string().required(),
       lastname: Joi.string().required(),
-      phoneNumber: Joi.number().required(),
     });
     return schema.validate(users);
   },
@@ -26,6 +25,7 @@ module.exports = {
   },
   validationUsersUpdatePassword: (users) => {
     const schema = Joi.object({
+      currentPassword: Joi.string().required(),
       password: Joi.string().min(8).required().strict(),
       confirmPassword: Joi.string()
         .valid(Joi.ref("password"))

@@ -16,7 +16,9 @@ router
   .patch("/:id", multer.uploadImage.single("image"), usersController.update)
   .put("/edit-password/:id", usersController.updatePassword)
   .put("/edit-pin/:id", usersController.updatePin)
-  // .put("/topup/:id", auth.verification(), usersController.topUp)
+  .put("/add-phone/:id", usersController.createPhoneNumber)
+  .put("/delete-phone/:id", usersController.deletePhoneNumber)
+
   .delete("/:id", auth.verification(), auth.isAdmin(), usersController.delete);
 
 module.exports = router;

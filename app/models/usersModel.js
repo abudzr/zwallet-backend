@@ -192,6 +192,33 @@ exports.updatePassword = (id, data) => {
   });
 };
 
+exports.updatePhone = (id, data) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "UPDATE users SET phoneNumber = ? WHERE id = ?",
+      [data, id],
+      (err, result) => {
+        if (!err) {
+          connection.query(
+            "SELECT * FROM users WHERE id = ?",
+            id,
+            (err, result) => {
+              if (!err) {
+                resolve(result);
+              } else {
+                reject(new Error("Internal server error"));
+              }
+            }
+          );
+        } else {
+          reject(new Error("Internal server error"));
+        }
+      }
+    );
+  });
+};
+
+
 exports.deleteUsers = (id) => {
   return new Promise((resolve, reject) => {
     connection.query("DELETE FROM users WHERE id = ?", id, (err, result) => {
@@ -396,16 +423,47 @@ exports.setPassword = (password, email) => {
   });
 };
 
-exports.checkPassword = (password) => {
+exports.checkPassword = (id, password) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      "SELECT password FROM users WHERE password = ?",
-      password,
+      `SELECT password FROM users WHERE id=${id} `,
+      (err, result) => {
+        if (!err) {
+          bcrypt.compare(
+            password,
+            result[0].password,
+            (err, result) => {
+              if (err) {
+                reject(new Error("Internal server error"));
+              } else {
+                if (result) {
+                  resolve(result);
+                } else {
+                  reject(new Error("Incorrect password, please enter the password correctly "));
+                }
+              }
+            }
+          );
+        } else {
+          reject(new Error("Internal server error"));
+        }
+      }
+    );
+  });
+};
+
+
+
+
+exports.checkPin = (id, pin) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      ` select pin from users where id=${id} and pin=${pin}`,
       (err, result) => {
         if (!err) {
           resolve(result);
         } else {
-          reject(new Error("Internal server error"));
+          reject(new Error(err));
         }
       }
     );

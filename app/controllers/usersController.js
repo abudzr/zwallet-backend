@@ -262,26 +262,92 @@ exports.update = async (req, res) => {
 exports.updatePin = async (req, res) => {
   const id = req.params.id;
 
-  const { pin } = req.body;
+  const { currentPin, pin } = req.body;
 
   const data = pin;
 
-  usersModel
-    .findUser(id, "update pin")
-    .then((result) => {
-      return usersModel.updatePin(id, data);
-    })
-    .then((result) => {
-      delete result[0].pin;
-      helper.printSuccess(res, 200, "Pin has been updated", result);
-    })
-    .catch((err) => {
-      if (err.message === "Internal server error") {
-        helper.printError(res, 500, err.message);
+  try {
+    const user = await usersModel.findUser(id, "update pin");
+    if (user < 1) {
+      helper.printError(res, 400, "User Not Found");
+      return;
+    } else {
+      const cekPin = await usersModel.checkPin(id, currentPin);
+      if (cekPin < 1) {
+        helper.printError(res, 400, "Incorrect pin, please enter the pin correctly ")
+        return;
       }
-      helper.printError(res, 400, err.message);
-    });
+      await usersModel.updatePin(id, data);
+      helper.printSuccess(
+        res,
+        200,
+        "Update Pin Success",
+      );
+    }
+  } catch (error) {
+    if (err.message === "Internal server error") {
+      helper.printError(res, 500, err.message);
+    }
+    helper.printError(res, 400, err.message);
+  }
 };
+
+
+exports.createPhoneNumber = async (req, res) => {
+  const { id } = req.params;
+  const { phoneNumber } = req.body;
+
+  const data = phoneNumber;
+
+  try {
+    const user = await usersModel.findUser(id, "Create phoneNumber");
+    if (user < 1) {
+      helper.printError(res, 400, "User Not Found");
+      return;
+    } else {
+      await usersModel.updatePhone(id, data);
+      helper.printSuccess(
+        res,
+        200,
+        "Create Phone Number Success",
+      );
+    }
+  } catch (err) {
+    if (err.message === "Internal server error") {
+      helper.printError(res, 500, err.message);
+    }
+    helper.printError(res, 400, err.message);
+  }
+};
+
+exports.deletePhoneNumber = async (req, res) => {
+  const { id } = req.params;
+
+  const data = null;
+
+  try {
+    const user = await usersModel.findUser(id, "DeletephoneNumber");
+    if (user < 1) {
+      helper.printError(res, 400, "User Not Found");
+      return;
+    } else {
+      await usersModel.updatePhone(id, data);
+      helper.printSuccess(
+        res,
+        200,
+        "Delete Number Success",
+      );
+    }
+  } catch (err) {
+    if (err.message === "Internal server error") {
+      helper.printError(res, 500, err.message);
+    }
+    helper.printError(res, 400, err.message);
+  }
+};
+
+
+
 
 exports.updatePassword = async (req, res) => {
   const id = req.params.id;
@@ -293,25 +359,34 @@ exports.updatePassword = async (req, res) => {
     return;
   }
 
-  const { password } = req.body;
+  const { currentPassword, password } = req.body;
 
   const data = await hash.hashPassword(password);
 
-  usersModel
-    .findUser(id, "update password")
-    .then((result) => {
-      return usersModel.updatePassword(id, data);
-    })
-    .then((result) => {
-      delete result[0].password;
-      helper.printSuccess(res, 200, "Password has been updated", result);
-    })
-    .catch((err) => {
-      if (err.message === "Internal server error") {
-        helper.printError(res, 500, err.message);
+  try {
+    const user = await usersModel.findUser(id, "update password");
+    if (user < 1) {
+      helper.printError(res, 400, "User Not Found");
+      return;
+    } else {
+      const cekPass = await usersModel.checkPassword(id, currentPassword);
+      if (cekPass < 1) {
+        helper.printError(res, 400, "Incorrect password, please enter the password correctly ")
+        return;
       }
-      helper.printError(res, 400, err.message);
-    });
+      await usersModel.updatePassword(id, data);
+      helper.printSuccess(
+        res,
+        200,
+        "Update Password Success",
+      );
+    }
+  } catch (err) {
+    if (err.message === "Internal server error") {
+      helper.printError(res, 500, err.message);
+    }
+    helper.printError(res, 400, err.message);
+  }
 };
 
 exports.delete = (req, res) => {
@@ -479,3 +554,4 @@ exports.resetPassword = async (req, res) => {
     helper.printError(res, 500, err.message);
   }
 };
+
