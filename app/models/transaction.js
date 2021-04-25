@@ -123,22 +123,22 @@ exports.transferIdUser = (idUser) => {
                                                     if (!err) {
                                                         resolve(result);
                                                     } else {
-                                                        reject(new Error("Internal server error"));
+                                                        reject(new Error("Update Credit Left Failed"));
                                                     }
                                                 }
                                             )
                                         } else {
-                                            reject(new Error("Internal server error"));
+                                            reject(new Error("Select credit failed"));
                                         }
                                     }
                                 )
                             } else {
-                                reject(new Error("Internal server error"));
+                                reject(new Error("Update user Credit for transfer Failed"));
                             }
                         }
                     )
                 } else {
-                    reject(new Error("Internal server error"));
+                    reject(new Error("Select Amount Failed"));
                 }
             })
     })
@@ -164,22 +164,22 @@ exports.receiverTransfer = (id) => {
                                                     if (!err) {
                                                         resolve(result);
                                                     } else {
-                                                        reject(new Error("Internal server error"));
+                                                        reject(new Error("Update Credit Left Failed"));
                                                     }
                                                 }
                                             )
                                         } else {
-                                            reject(new Error("Internal server error"));
+                                            reject(new Error("Select credit failed"));
                                         }
                                     }
                                 )
                             } else {
-                                reject(new Error("Internal server error"));
+                                reject(new Error("Update user Credit for Receiver Failed"));
                             }
                         }
                     )
                 } else {
-                    reject(new Error("Internal server error"));
+                    reject(new Error("Select Amount Failed"));
                 }
             })
     })
