@@ -10,7 +10,7 @@ router
     .get("/expense/:id", auth.verification(), transactionController.findUserExpense)
     .get("/user/:id", auth.verification(), transactionController.findUserTransactions)
     .post("/transfer", transactionController.createTransfer)
-    .post("/topup", transactionController.createTopUp)
+    .post("/user/topup", transactionController.createTopUp)
 
 
 module.exports = router;
