@@ -2,9 +2,9 @@ const nodemailer = require("nodemailer");
 const smtpTransport = require("nodemailer-smtp-transport");
 const host = process.env.HOST;
 const port = process.env.PORT_FRONTEND;
-// const api = process.env.PORT;
-// const linkApi = `http://${host}:${api}`
-const linkApi = process.env.API;
+const api = process.env.PORT;
+const linkApi = `http://${host}:${api}`;
+// const linkApi = process.env.API;
 const link = `http://${host}:${port}`;
 const email = process.env.EMAIL_USER;
 const password = process.env.EMAIL_PASS;
@@ -39,7 +39,7 @@ const send = (destination, token, type) => {
           </head>
           <body>
               <div class="container">
-              <h2>Welcome to the Zwallet account registration: wait, watch, wow! Please confirm!</h2>
+              <h2>Welcome to the Zwallet account registration: Please confirm!</h2>
               <p>You have registered a Zwallet account with ${destination}. Please click link to continue verification account.</p>
               <a href="${linkApi}/api/v1/users/auth/verify?email=${destination}&token=${token}"> Click Here to Verification</a>
               <p>If you can't click the link above, you can copy/paste the following link into your browser: ${linkApi}/api/v1/users/auth/verify?email=${destination}&token=${token}</p>
