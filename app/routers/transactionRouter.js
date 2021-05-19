@@ -8,6 +8,9 @@ router
     .get("/", transactionController.listTransactionId)
     .get("/income/:id", auth.verification(), transactionController.findUserIncome)
     .get("/expense/:id", auth.verification(), transactionController.findUserExpense)
+    .get("/detail/:id", transactionController.findDetailTransaction)
+    .get("/detail/", transactionController.listTransaction)
+
     .get("/user/:id", transactionController.findUserTransactions)
     .post("/transfer", transactionController.createTransfer)
     .post("/user/topup", transactionController.createTopUp)

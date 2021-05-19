@@ -2,6 +2,25 @@ const transactionModel = require("../models/transaction");
 const usersModel = require("../models/usersModel");
 const helper = require("../helpers/printHelper");
 
+
+exports.listTransaction = (req, res) => {
+    transactionModel
+        .getAllTransaction()
+        .then((result) => {
+            if (result < 1) {
+                helper.printError(res, 400, "Transaction not found");
+                return;
+            }
+            helper.printSuccess(res, 200, "Find all transaction successfully", result);
+        })
+        .catch((err) => {
+            helper.printError(res, 500, err.message);
+        });
+};
+
+
+
+
 exports.listTransactionId = async (req, res) => {
     try {
         const id = req.auth.id;
@@ -162,6 +181,23 @@ exports.findUserTransactions = (req, res) => {
                 page,
                 perPage
             );
+        })
+        .catch((err) => {
+            helper.printError(res, 500, err.message);
+        });
+};
+
+exports.findDetailTransaction = (req, res) => {
+    const id = req.params.id;
+
+    transactionModel
+        .getTransactionbyId(id)
+        .then((result) => {
+            if (result < 1) {
+                helper.printError(res, 400, "Transaction not found");
+                return;
+            }
+            helper.printSuccess(res, 200, "Find detail transaction successfully", result);
         })
         .catch((err) => {
             helper.printError(res, 500, err.message);

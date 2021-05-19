@@ -17,6 +17,22 @@ exports.getAllTransactionById = (id, cond) => {
     })
 };
 
+exports.getAllTransaction = () => {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            `SELECT * FROM transaction `,
+            (err, result) => {
+                if (!err) {
+                    resolve(result);
+                } else {
+                    reject(new Error(err));
+                }
+            }
+        )
+    })
+};
+
+
 exports.checkPin = (id, pin) => {
     return new Promise((resolve, reject) => {
         connection.query(
@@ -235,6 +251,26 @@ exports.getAllExpensebyId = (id) => {
     return new Promise((resolve, reject) => {
         connection.query(
             `SELECT SUM(amount) AS expense FROM transaction WHERE idUser =${id} AND type ="transfer"`,
+            (err, result) => {
+                if (!err) {
+                    resolve(result);
+                } else {
+                    reject(new Error("Internal server error"));
+                }
+            }
+        )
+    })
+}
+
+exports.getTransactionbyId = (id) => {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            `SELECT t.id, u.username, u.email, u.firstname, u.lastname, u.phoneNumber, u.image, t.createdAt, t.idUser, t.amount, t.notes, t.status, t.type 
+            FROM transaction t 
+            INNER JOIN users u 
+            ON 
+            t.idReceiver = u.id WHERE t.id = ${id}
+            `,
             (err, result) => {
                 if (!err) {
                     resolve(result);
