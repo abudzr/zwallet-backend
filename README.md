@@ -1,4 +1,6 @@
-<h1 align="center">Zwallet - Arkademy</h1>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/68935056/119449706-2678ef00-bd5d-11eb-821d-5af9257c793c.png"   alt="Telegram" border="0" />
+</p>
 
 ---
 
