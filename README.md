@@ -138,4 +138,4 @@ Object data contains content according to the request
 ## Link
 
 - [Frontend](https://github.com/abudzr/zwallet-frontend)
-- [Visit Project](http://178.128.50.236:3000/)
+- [Visit Project](https://fe-zwallet.vercel.app/)
