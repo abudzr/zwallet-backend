@@ -1,11 +1,12 @@
 const nodemailer = require("nodemailer");
 const smtpTransport = require("nodemailer-smtp-transport");
-const host = process.env.HOST;
-const port = process.env.PORT_FRONTEND;
-const api = process.env.PORT;
-const linkApi = `http://${host}:${api}`;
-// const linkApi = process.env.API;
-const link = `http://${host}:${port}`;
+// const host = process.env.HOST;
+// const port = process.env.PORT_FRONTEND;
+// const api = process.env.PORT;
+// const linkApi = `http://${host}:${api}`;
+const linkApi = process.env.API;
+const link = process.env.LINK;
+// const link = `http://${host}:${port}`;
 const email = process.env.EMAIL_USER;
 const password = process.env.EMAIL_PASS;
 
