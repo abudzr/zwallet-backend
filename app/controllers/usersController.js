@@ -10,7 +10,7 @@ const validation = require("../helpers/validation");
 const secretKey = process.env.SECRET_KEY;
 const host = process.env.HOST;
 const port = process.env.PORT_FRONTEND;
-const link = `http://${host}:${port}`;
+const link = process.env.LINK;
 
 
 
